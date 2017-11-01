@@ -5,6 +5,13 @@ using UnityEngine.SceneManagement;
 
 namespace Vonderportal
 {
+    public enum SceneType
+    {
+        last,
+        current,
+        next
+    }
+
     public class Dimension : MonoBehaviour
     {
 
@@ -33,12 +40,7 @@ namespace Vonderportal
 
         public List<GameObject> rootObjects;
 
-        public enum SceneType
-        {
-            last,
-            current,
-            next
-        }
+
 
 
 

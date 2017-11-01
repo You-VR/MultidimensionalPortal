@@ -5,6 +5,8 @@ using UnityEngine.VR;
 
 namespace Vonderportal
 {
+    public enum PortalType { incoming, outgoing }
+
     public class Portal : MonoBehaviour
     {
         [Tooltip("The Main Camera. On Vive this is [CameraRig] -> Camera (Head) -> Camera (Eye)")]
@@ -13,10 +15,8 @@ namespace Vonderportal
 
         public bool triggerZDirection { get; private set; }
 
-
         void Awake()
         {
-
 
             //Create Portal Camera
             portalCam = Instantiate(mainCamera);

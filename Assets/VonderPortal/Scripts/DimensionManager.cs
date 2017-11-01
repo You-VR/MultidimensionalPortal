@@ -14,6 +14,7 @@ namespace Vonderportal
         public Dimension currDimension { get { return activeDimensions[1]; } }
         public Dimension nextDimension { get { return activeDimensions[2]; } }
 
+
         public void set(Dimension[] dimensions)
         {
             var unloadDimensions = activeDimensions.Except(dimensions);
@@ -24,9 +25,9 @@ namespace Vonderportal
                 if (unloadDimension != null) { unloadDimension.UnloadScene(); }
             }
 
-            if (activeDimensions[0] != null) { activeDimensions[0].LoadScene(Dimension.SceneType.last); }
-            if (activeDimensions[1] != null) { activeDimensions[1].LoadScene(Dimension.SceneType.current); }
-            if (activeDimensions[2] != null) { activeDimensions[2].LoadScene(Dimension.SceneType.next); }
+            if (activeDimensions[0] != null) { activeDimensions[0].LoadScene(SceneType.last); }
+            if (activeDimensions[1] != null) { activeDimensions[1].LoadScene(SceneType.current); }
+            if (activeDimensions[2] != null) { activeDimensions[2].LoadScene(SceneType.next); }
         }
     }
 
@@ -34,6 +35,7 @@ namespace Vonderportal
     public class DimensionManager : MonoBehaviour
     {
 
+        public Camera mainCamera;
         public string[] dimension_names;
 
         private List<Dimension> dimensions;
@@ -88,6 +90,9 @@ namespace Vonderportal
         {
             ChangeDimension(1);
 
+            mainCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("LastScene"));
+            mainCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("NextScene")); ;
+
         }
         void OnGUI()
         {
@@ -104,6 +109,7 @@ namespace Vonderportal
             {
                 dimensionIndex = _dimensionIndex;
                 assignDimensions();
+
             }
             else
             {
