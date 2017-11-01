@@ -24,7 +24,6 @@ Shader "VonderPortal/PortalShader"
 
 			/// which eye we are rendering. 0 == left, 1 == right
 			uniform int RenderingEye;
-			uniform int OpenVRRender;
 			
 
 			sampler2D _LeftTex;
@@ -80,15 +79,14 @@ Shader "VonderPortal/PortalShader"
 				leftEye = (unity_CameraProjection[0][2] <= 0);
 			#endif
 
-			if (OpenVRRender) {
-				leftEye = RenderingEye;
-			}
 
 			if (leftEye || _RecursiveRender == 1) {
-				return tex2D(_LeftTex, screenUV);// * float4(0, 0, 1, 1);
+				return tex2D(_LeftTex, screenUV);// * 
+				//return float4(0, 0, 1, 1);
 			}
 			else {
-				return tex2D(_RightTex, screenUV);// * float4(1,1,0,1);
+				return tex2D(_RightTex, screenUV);// * 
+				//return float4(1,0,0,1);
 			}
 		}
 

@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultidimensionalPortal", "MultidimensionalPortal.csproj", "{4A3C3AB0-E0C8-89E3-0A2D-4AE12C79207B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultidimensionalPortal.Editor", "MultidimensionalPortal.Editor.csproj", "{516A0F13-5668-E7A5-EDB0-BE41DB22B025}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4A3C3AB0-E0C8-89E3-0A2D-4AE12C79207B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A3C3AB0-E0C8-89E3-0A2D-4AE12C79207B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A3C3AB0-E0C8-89E3-0A2D-4AE12C79207B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A3C3AB0-E0C8-89E3-0A2D-4AE12C79207B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{516A0F13-5668-E7A5-EDB0-BE41DB22B025}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{516A0F13-5668-E7A5-EDB0-BE41DB22B025}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{516A0F13-5668-E7A5-EDB0-BE41DB22B025}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{516A0F13-5668-E7A5-EDB0-BE41DB22B025}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

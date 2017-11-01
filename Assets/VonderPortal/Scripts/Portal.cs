@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VR;
 
 namespace Vonderportal
 {
@@ -8,8 +9,6 @@ namespace Vonderportal
     {
         [Tooltip("The Main Camera. On Vive this is [CameraRig] -> Camera (Head) -> Camera (Eye)")]
         public Camera mainCamera;
-
-        public PortalRenderer portalPlane;
         public Camera portalCam { get; private set; }
 
         public bool triggerZDirection { get; private set; }
@@ -37,8 +36,14 @@ namespace Vonderportal
             {
                 Destroy(portalCam.GetComponent<GUILayer>());
             }
+            foreach (Transform child in portalCam.transform)
+            {
+                Destroy(child.gameObject);
+            }
 
             portalCam.enabled = false;
+
+            Shader.SetGlobalInt("OpenVRRender", 0);
         }
         private void Start()
         {
@@ -48,17 +53,8 @@ namespace Vonderportal
 
         void Update()
         {
-            // Copy camera position/rotation/projection data into the reflectionCamera
-            portalCam.transform.position = mainCamera.transform.position;
-            portalCam.transform.rotation = mainCamera.transform.rotation;
-            portalCam.ResetWorldToCameraMatrix();
 
-            portalCam.farClipPlane = mainCamera.farClipPlane;
-            portalCam.nearClipPlane = mainCamera.nearClipPlane;
-            portalCam.orthographic = mainCamera.orthographic;
-            portalCam.fieldOfView = mainCamera.fieldOfView;
-            portalCam.aspect = mainCamera.aspect;
-            portalCam.orthographicSize = mainCamera.orthographicSize;
+
         }
 
 
