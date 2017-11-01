@@ -180,10 +180,28 @@
     <Compile Include="Assets\_Plugins\SteamVR\Scripts\SteamVR_TrackedObject.cs" />
     <Compile Include="Assets\_Plugins\SteamVR\Scripts\SteamVR_UpdatePoses.cs" />
     <Compile Include="Assets\_Plugins\SteamVR\Scripts\SteamVR_Utils.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Demo\Scripts\ControllerGrabObject.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Demo\Scripts\GearGrabObject.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Demo\Scripts\ThrowObject.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Scripts\CameraExtensions.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Scripts\Dimension.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Scripts\DimensionChanger.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Scripts\GearCameraRenderInfo.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Scripts\LayerManager.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Scripts\MeshDeformer.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Scripts\MeshDeformerInput.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Scripts\PlaneMeshDeformer.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Scripts\Portal.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Scripts\SubdividedCube.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\Dimension.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\DimensionManager.cs" />
+    <Compile Include="Assets\VonderPortal\Scripts\Portal.cs" />
+    <Compile Include="Assets\VonderPortal\Scripts\PortalRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Pocket Portal VR\Materials\PortalShader.shader" />
+    <None Include="Assets\Pocket Portal VR\README.txt" />
+    <None Include="Assets\VonderPortal\Materials\VonderPortalShader.shader" />
     <None Include="Assets\_Plugins\SteamVR\InteractionSystem\Core\Shaders\SeeThru.shader" />
     <None Include="Assets\_Plugins\SteamVR\InteractionSystem\Core\Shaders\Silhouette.shader" />
     <None Include="Assets\_Plugins\SteamVR\InteractionSystem\Hints\Shaders\ControllerButtonHints.shader" />

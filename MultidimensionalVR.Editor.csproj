@@ -129,8 +129,13 @@
     <Compile Include="Assets\_Plugins\SteamVR\Editor\SteamVR_Settings.cs" />
     <Compile Include="Assets\_Plugins\SteamVR\Editor\SteamVR_SkyboxEditor.cs" />
     <Compile Include="Assets\_Plugins\SteamVR\Editor\SteamVR_Update.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Editor\DefineManager.cs" />
+    <Compile Include="Assets\Pocket Portal VR\Editor\SubdividedCubeEditor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Pocket Portal VR\Materials\PortalShader.shader" />
+    <None Include="Assets\Pocket Portal VR\README.txt" />
+    <None Include="Assets\VonderPortal\Materials\VonderPortalShader.shader" />
     <None Include="Assets\_Plugins\SteamVR\InteractionSystem\Core\Shaders\SeeThru.shader" />
     <None Include="Assets\_Plugins\SteamVR\InteractionSystem\Core\Shaders\Silhouette.shader" />
     <None Include="Assets\_Plugins\SteamVR\InteractionSystem\Hints\Shaders\ControllerButtonHints.shader" />
