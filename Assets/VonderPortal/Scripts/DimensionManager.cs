@@ -15,6 +15,7 @@ namespace Vonderportal
         public Dimension nextDimension { get { return activeDimensions[2]; } }
 
 
+
         public void set(Dimension[] dimensions)
         {
             var unloadDimensions = activeDimensions.Except(dimensions);
@@ -40,20 +41,36 @@ namespace Vonderportal
 
         private List<Dimension> dimensions;
         private ActiveDimensions activeDimensions;
-        private int dimensionIndex;
+        public int dimensionIndex { get; private set; }
 
         public delegate void ChangeDimensionHandler(int dimensionIndex);
-        public static event ChangeDimensionHandler ChangeDimension;
+        public static event ChangeDimensionHandler onChangeDimension;
+        public void ChangeDimension(SceneType sceneType) {
+            switch (sceneType)
+            {
+                case SceneType.last:
+                    onChangeDimension.Invoke(dimensionIndex - 1);
+                    break;
+                case SceneType.current:
+                    onChangeDimension.Invoke(dimensionIndex);
+                    break;
+                case SceneType.next:
+                    onChangeDimension.Invoke(dimensionIndex + 1);
+                    break;
+            }            
+        }
 
         void OnEnable()
         {
-            ChangeDimension += ChangeLoadedDimensions;
+            onChangeDimension += ChangeLoadedDimensions;
         }
 
 
         void OnDisable()
         {
-            ChangeDimension -= ChangeLoadedDimensions;
+            onChangeDimension -= ChangeLoadedDimensions;
+
+            
         }
 
         private void Awake()
@@ -88,7 +105,7 @@ namespace Vonderportal
         // Use this for initialization
         void Start()
         {
-            ChangeDimension(1);
+            onChangeDimension(1);
 
             mainCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("LastScene"));
             mainCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("NextScene")); ;
@@ -98,12 +115,12 @@ namespace Vonderportal
         {
             if (GUI.Button(new Rect(Screen.width / 2 - 50, 5, 100, 30), "Click"))
             {
-                if (ChangeDimension != null)
-                    ChangeDimension(dimensionIndex + 1);
+                if (onChangeDimension != null)
+                    ChangeDimension(SceneType.next);
             }
         }
 
-        void ChangeLoadedDimensions(int _dimensionIndex)
+        public void ChangeLoadedDimensions(int _dimensionIndex)
         {
             if (_dimensionIndex <= dimensions.Count)
             {
