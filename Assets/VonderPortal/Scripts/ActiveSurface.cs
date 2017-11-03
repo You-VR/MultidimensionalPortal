@@ -12,20 +12,22 @@ namespace Vonderportal
         public bool useObliqueCulling;
 
 
+        [HideInInspector]
+        public float portalSwitchDistance = 0.03f;
+
+        [HideInInspector]
+        public bool triggerZDirection;
+
+
         // Private Variables
         protected Camera surfaceCam;
+        protected virtual string cameraName { get; }
 
         private Renderer meshRenderer { get { return GetComponent<Renderer>(); } }
         private MeshFilter meshFilter { get { return GetComponent<MeshFilter>(); } }
 
-        public bool triggerZDirection;
-
         private RenderTexture leftTexture;
         private RenderTexture rightTexture;
-
-        public float portalSwitchDistance = 0.03f;
-
-        protected virtual string cameraName { get;  }
 
         //*************************************************************************************************************************//
         // VIRTUAL FUNCTIONS                                                                                                       //
@@ -40,6 +42,7 @@ namespace Vonderportal
         private void Awake()
         {
             surfaceCam = CreateCamera();
+
         }
 
 
@@ -52,6 +55,11 @@ namespace Vonderportal
             leftTexture = new RenderTexture((int)(texSize.x ), (int)(texSize.y), 16);
             rightTexture = new RenderTexture((int)(texSize.x), (int)(texSize.y), 16);
 
+            setTriggerZDirection();
+
+        }
+        public void setTriggerZDirection()
+        {
             //Set Trigger Z Direction
             Vector3 convertedPoint = this.transform.InverseTransformPoint(mainCamera.transform.position);
             triggerZDirection = (convertedPoint.z > 0);

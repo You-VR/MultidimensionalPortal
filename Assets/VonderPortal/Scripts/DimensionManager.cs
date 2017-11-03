@@ -43,6 +43,8 @@ namespace Vonderportal
         private ActiveDimensions activeDimensions;
         public int dimensionIndex { get; private set; }
 
+        public static DimensionManager dimensionManagerInstance;
+
         public delegate void ChangeDimensionHandler(int dimensionIndex);
         public static event ChangeDimensionHandler onChangeDimension;
         public void ChangeDimension(SceneType sceneType) {
@@ -75,9 +77,16 @@ namespace Vonderportal
 
         private void Awake()
         {
+            if (dimensionManagerInstance == null) { dimensionManagerInstance = this; }
+            else
+            {
+                Debug.LogError("Only one instance of dimension manager allowed");
+            }
+
+
             // Validate List of Scene names
             List<string> scenesInBuild = new List<string>();
-            for (int i = 1; i < SceneManager.sceneCountInBuildSettings; i++)
+            for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
             {
                 string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
                 int lastSlash = scenePath.LastIndexOf("/");

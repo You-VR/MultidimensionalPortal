@@ -22,10 +22,15 @@ namespace Vonderportal
 
         protected override void SetSurfaceCamPosition(Vector3 eyePosition, Quaternion eyeRotation) {
             Vector3 normal = transform.forward;
-            Vector3 pos = transform.position;
 
-            surfaceCam.transform.position = Vector3.Reflect(eyePosition, normal); 
-            surfaceCam.transform.rotation = Quaternion.Inverse(eyeRotation);
+            Vector3 posInPlane = transform.InverseTransformPoint(eyePosition);
+            Vector3 newPos = new Vector3(posInPlane.x, -posInPlane.y, posInPlane.z);
+            newPos = transform.TransformPoint(newPos);
+            surfaceCam.transform.position = newPos;
+
+            Vector3 euler = eyeRotation.eulerAngles;
+            //surfaceCam.transform.eulerAngles = new Vector3(-euler.x, euler.y, euler.z);
+
             surfaceCam.ResetWorldToCameraMatrix();
         }
 

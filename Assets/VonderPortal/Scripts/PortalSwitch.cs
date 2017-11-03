@@ -10,7 +10,8 @@ namespace Vonderportal
         bool allowSwitch = true;
 
         public bool automatic = true;
-        public DimensionManager dimensionManager;
+
+        private DimensionManager dimensionManager { get { return DimensionManager.dimensionManagerInstance; } }
         public Camera mainCamera;
 
         private PortalSurface portalSurface { get { return GetComponent<PortalSurface>(); } }
@@ -32,17 +33,23 @@ namespace Vonderportal
 
             if ((convertedPoint.z > 0) != portalSurface.triggerZDirection && Mathf.Abs(convertedPoint.z) > portalSurface.portalSwitchDistance)
             {
-                Debug.Log("!");
                 if (allowSwitch)
                 {
-                    Debug.Log("!");
                     dimensionManager.ChangeDimension(toDimension);
-                    allowSwitch = false;
+                    StartCoroutine(DisablePortal());                    
                 }
 
             }
         }
+        IEnumerator DisablePortal()
+        {
+            allowSwitch = false;
+
+            yield return new WaitForSeconds(3.0f);
+            allowSwitch = true;
+        }
     }
+
 
 
     [CustomEditor(typeof(PortalSwitch))]
@@ -53,7 +60,6 @@ namespace Vonderportal
             PortalSwitch portalSwitch = target as PortalSwitch;
 
             portalSwitch.automatic = GUILayout.Toggle(portalSwitch.automatic, "Automatic");
-            portalSwitch.dimensionManager = (DimensionManager)EditorGUILayout.ObjectField("Dimension Manager", portalSwitch.dimensionManager, typeof(DimensionManager), true);
 
             if (!portalSwitch.automatic)
             {
