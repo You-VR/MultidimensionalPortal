@@ -131,7 +131,7 @@
     <Compile Include="Assets\_Plugins\SteamVR\Editor\SteamVR_Update.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\VonderPortal\Materials\VonderPortalShader.shader" />
+    <None Include="Assets\VonderPortal\Materials\PortalShader.shader" />
     <None Include="Assets\_Plugins\SteamVR\InteractionSystem\Core\Shaders\SeeThru.shader" />
     <None Include="Assets\_Plugins\SteamVR\InteractionSystem\Core\Shaders\Silhouette.shader" />
     <None Include="Assets\_Plugins\SteamVR\InteractionSystem\Hints\Shaders\ControllerButtonHints.shader" />

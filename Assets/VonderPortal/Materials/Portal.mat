@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Portal
-  m_Shader: {fileID: 4800000, guid: 322353f5fe0ec4543942822d47145f6e, type: 3}
+  m_Shader: {fileID: 4800000, guid: 74a5cecf87b39ba4c8270a9a5c24ae74, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0

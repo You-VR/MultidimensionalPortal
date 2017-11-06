@@ -20,7 +20,7 @@ namespace Vonderportal
             {
                 case SceneType.last:
                     surfaceCam.cullingMask |= (1 << LayerMask.NameToLayer("LastScene"));
-                    surfaceCam.cullingMask &= (1 << LayerMask.NameToLayer("CurrentScene"));
+                    surfaceCam.cullingMask &= ~(1 << LayerMask.NameToLayer("CurrentScene"));
                     surfaceCam.cullingMask &= ~(1 << LayerMask.NameToLayer("NextScene"));
                     break;
                 case SceneType.current:

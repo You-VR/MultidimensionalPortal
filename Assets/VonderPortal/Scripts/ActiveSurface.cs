@@ -7,7 +7,8 @@ namespace Vonderportal
 {
     public class ActiveSurface : MonoBehaviour
     {
-        public Camera mainCamera;
+        private DimensionManager dimensionManager { get { return DimensionManager.dimensionManagerInstance; } }
+        private Camera mainCamera { get { return dimensionManager.mainCamera; } }
         public bool deform;
         public bool useObliqueCulling;
 
@@ -21,7 +22,7 @@ namespace Vonderportal
 
         // Private Variables
         protected Camera surfaceCam;
-        protected virtual string cameraName { get; }
+        protected virtual string cameraName { get; set; }
 
         private Renderer meshRenderer { get { return GetComponent<Renderer>(); } }
         private MeshFilter meshFilter { get { return GetComponent<MeshFilter>(); } }
@@ -39,15 +40,11 @@ namespace Vonderportal
         // PRIVATE FUNCTIONS                                                                                                       //
         //*************************************************************************************************************************//
 
-        private void Awake()
-        {
-            surfaceCam = CreateCamera();
-
-        }
-
-
         private void Start()
         {
+
+            surfaceCam = CreateCamera();
+
             this.gameObject.layer = LayerMask.NameToLayer("Portal");
 
             //Init Textures
@@ -111,7 +108,7 @@ namespace Vonderportal
             {
                 //Create Portal Camera
                 Camera newCam = Instantiate(mainCamera);
-                newCam.name = cameraName + "_" + gameObject.name;
+                newCam.name = cameraName + "_camera" ;
                 newCam.transform.parent = this.transform;
 
                 // Get rid of extra components

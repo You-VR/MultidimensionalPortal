@@ -12,45 +12,45 @@ namespace Vonderportal
         public bool automatic = true;
 
         private DimensionManager dimensionManager { get { return DimensionManager.dimensionManagerInstance; } }
-        public Camera mainCamera;
+        private Camera mainCamera { get { return dimensionManager.mainCamera; } }
 
         private PortalSurface portalSurface { get { return GetComponent<PortalSurface>(); } }
         private SceneType toDimension;
+
+        private BoxCollider collider;
 
         void Awake()
         {
             if (automatic)
             {
                 toDimension = portalSurface.toDimension;
-                mainCamera  = portalSurface.mainCamera;
                 toDimension = portalSurface.toDimension;
             }
+        }
+
+        private void Start()
+        {
+            collider = this.gameObject.AddComponent<BoxCollider>();
+            collider.size = new Vector3(1,1, 0.2f);
+            collider.center = new Vector3(0, 0, 0.1f);
+
         }
 
         void Update()
         {
             Vector3 convertedPoint = portalSurface.transform.InverseTransformPoint(mainCamera.transform.position);
 
-            if ((convertedPoint.z > 0) != portalSurface.triggerZDirection && Mathf.Abs(convertedPoint.z) > portalSurface.portalSwitchDistance)
+            if ((convertedPoint.z > 0) != portalSurface.triggerZDirection && Mathf.Abs(convertedPoint.z) > portalSurface.portalSwitchDistance && collider.bounds.Contains(mainCamera.transform.position))
             {
                 if (allowSwitch)
                 {
                     dimensionManager.ChangeDimension(toDimension);
-                    StartCoroutine(DisablePortal());                    
+                
                 }
 
             }
         }
-        IEnumerator DisablePortal()
-        {
-            allowSwitch = false;
-
-            yield return new WaitForSeconds(3.0f);
-            allowSwitch = true;
-        }
     }
-
-
 
     [CustomEditor(typeof(PortalSwitch))]
     public class MyScriptEditor : Editor

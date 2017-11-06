@@ -60,6 +60,9 @@ namespace Vonderportal
 
         public void UnloadScene()
         {
+            Debug.Log(scene.name);
+            Debug.Log(dimensionName);
+            Debug.Log(sceneType);
             SceneManager.UnloadSceneAsync(scene);
         }
 
@@ -89,16 +92,61 @@ namespace Vonderportal
             GameObject[] rootObjects = scene.GetRootGameObjects();
             foreach (GameObject rootObject in rootObjects)
             {
+               
+
+                // Remove everything in the persistant object
                 if (rootObject.name == "Persistant")
                 {
                     UnityEngine.Object.Destroy(rootObject);
+                }
+                else if (rootObject.name == "Tracked")
+                {
+                    Debug.Log("Tracked Objects in scene");
+                }
+
+                // Deal with portals in other worlds
+                if (rootObject.name == "Portals")
+                {
+                    bool set;
+                    if (sceneType != SceneType.current) { set = false; }
+                    else { set = true; }
+
+                    Transform[] childrenTransforms = rootObject.GetComponentsInChildren<Transform>(true);
+                    foreach (Transform t in childrenTransforms)
+                    {
+
+                        PortalSwitch portalSwitch = t.GetComponentInChildren<PortalSwitch>(true);
+                        ActiveSurface activeSurface = t.GetComponentInChildren<ActiveSurface>(true);
+
+                        if( portalSwitch || activeSurface) { t.gameObject.SetActive(set); }
+                    }
+
+
+
+
                 }
                 else
                 {
                     Transform[] childrenTransforms = rootObject.GetComponentsInChildren<Transform>();
                     foreach (Transform t in childrenTransforms)
                     {
+                        // Place game objects on the right layer
                         t.gameObject.layer = sceneLayer;
+
+
+                        //Mute audiosources
+                        AudioSource[] audioSources = t.GetComponentsInChildren<AudioSource>();
+                        foreach (AudioSource audioSource in audioSources)
+                        {
+                            if (sceneType != SceneType.current)
+                            {
+                                audioSource.volume = 0.0f;
+                            }
+                            else
+                            {
+                                audioSource.volume = 1.0f;
+                            }
+                        }
                     }
                 }
             }
