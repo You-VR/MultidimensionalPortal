@@ -38,7 +38,6 @@ namespace Vonderportal
 
         public Camera mainCamera;
         public string[] dimension_names;
-        public bool bidirectional = false;
 
         private List<Dimension> dimensions;
         private ActiveDimensions activeDimensions;

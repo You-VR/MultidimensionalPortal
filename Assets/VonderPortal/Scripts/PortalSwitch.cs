@@ -17,7 +17,7 @@ namespace Vonderportal
         private PortalSurface portalSurface { get { return GetComponent<PortalSurface>(); } }
         private SceneType toDimension;
 
-        private BoxCollider collider;
+        private BoxCollider triggerCollider;
 
         void Awake()
         {
@@ -30,9 +30,9 @@ namespace Vonderportal
 
         private void Start()
         {
-            collider = this.gameObject.AddComponent<BoxCollider>();
-            collider.size = new Vector3(1,1, 0.2f);
-            collider.center = new Vector3(0, 0, 0.1f);
+            triggerCollider = this.gameObject.AddComponent<BoxCollider>();
+            triggerCollider.size = new Vector3(1,1, 0.2f);
+            triggerCollider.center = new Vector3(0, 0, 0.1f);
 
         }
 
@@ -40,7 +40,7 @@ namespace Vonderportal
         {
             Vector3 convertedPoint = portalSurface.transform.InverseTransformPoint(mainCamera.transform.position);
 
-            if ((convertedPoint.z > 0) != portalSurface.triggerZDirection && Mathf.Abs(convertedPoint.z) > portalSurface.portalSwitchDistance && collider.bounds.Contains(mainCamera.transform.position))
+            if ((convertedPoint.z > 0) != portalSurface.triggerZDirection && Mathf.Abs(convertedPoint.z) > portalSurface.portalSwitchDistance && triggerCollider.bounds.Contains(mainCamera.transform.position))
             {
                 if (allowSwitch)
                 {
@@ -53,7 +53,7 @@ namespace Vonderportal
     }
 
     [CustomEditor(typeof(PortalSwitch))]
-    public class MyScriptEditor : Editor
+    public class PortalSwitchEditor : Editor
     {
         public override void OnInspectorGUI()
         {
@@ -63,7 +63,7 @@ namespace Vonderportal
 
             if (!portalSwitch.automatic)
             {
-
+                //TO-DO provide manual portal switch settings
             } else
             {
                 GUILayout.TextArea("Settings taken from PortalSurface");

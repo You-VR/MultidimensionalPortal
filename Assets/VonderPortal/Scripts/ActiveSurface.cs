@@ -1,21 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 
 namespace Vonderportal
 {
     public class ActiveSurface : MonoBehaviour
     {
+
         private DimensionManager dimensionManager { get { return DimensionManager.dimensionManagerInstance; } }
-        private Camera mainCamera { get { return dimensionManager.mainCamera; } }
-        public bool deform;
-        public bool useObliqueCulling;
+        private Camera mainCamera { get
+            {
+                if (dimensionManager != null) {
+                    return dimensionManager.mainCamera;
+                }
+                else
+                {
+                    return _mainCamera;
+                }
+            }
+        }
 
+        public Camera _mainCamera;
 
-        [HideInInspector]
         public float portalSwitchDistance = 0.03f;
-
+        public bool useObliqueCulling = true;
         [HideInInspector]
         public bool triggerZDirection;
 
@@ -235,6 +245,25 @@ namespace Vonderportal
             if (a > 0.0f) return 1.0f;
             if (a < 0.0f) return -1.0f;
             return 0.0f;
+        }
+    }
+
+    [CustomEditor(typeof(ActiveSurface))]
+    public class ActiveSurfaceEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            ActiveSurface activeSurface = target as ActiveSurface;
+
+            if (DimensionManager.dimensionManagerInstance != null)
+            {
+                activeSurface._mainCamera = (Camera)EditorGUILayout.ObjectField(activeSurface._mainCamera, typeof(Camera), true);
+            }
+            else
+            {
+                
+            }
+
         }
     }
 }
