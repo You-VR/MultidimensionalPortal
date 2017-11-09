@@ -137,11 +137,11 @@ namespace Vonderportal
                         {
                             if (sceneType != SceneType.current)
                             {
-                                audioSource.volume = 0.0f;
+                                audioSource.mute = true;
                             }
                             else
                             {
-                                audioSource.volume = 1.0f;
+                                audioSource.mute = false;
                             }
                         }
                     }
