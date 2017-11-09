@@ -60,9 +60,6 @@ namespace Vonderportal
 
         public void UnloadScene()
         {
-            Debug.Log(scene.name);
-            Debug.Log(dimensionName);
-            Debug.Log(sceneType);
             SceneManager.UnloadSceneAsync(scene);
         }
 

@@ -10,7 +10,7 @@ namespace Vonderportal
     {
 
         private DimensionManager dimensionManager { get { return DimensionManager.dimensionManagerInstance; } }
-        private Camera mainCamera { get
+        public Camera mainCamera { get
             {
                 if (dimensionManager != null) {
                     return dimensionManager.mainCamera;
@@ -22,10 +22,26 @@ namespace Vonderportal
             }
         }
 
+        [SerializeField]
         public Camera _mainCamera;
 
-        public float portalSwitchDistance = 0.03f;
-        public bool useObliqueCulling = true;
+
+        public bool active {
+            get { return _isActive; }
+            set {
+                if (value) {
+                    meshRenderer.enabled = true;
+                    _isActive = value;
+
+                } else {
+                    meshRenderer.enabled = false;
+                    _isActive = value;
+                }
+            }
+        }
+        private bool _isActive = true;
+
+        public float clipPlaneOffset = 0.1f;
         [HideInInspector]
         public bool triggerZDirection;
 
@@ -44,7 +60,7 @@ namespace Vonderportal
         // VIRTUAL FUNCTIONS                                                                                                       //
         //*************************************************************************************************************************//
         protected virtual void SetSurfaceCamCullingMask() { }
-        protected virtual void SetSurfaceCamPosition(Vector3 eyePosition, Quaternion eyeRotation) { }
+        protected virtual void SetSurfaceCamPosition(Vector3 eyePosition, Quaternion eyeRotation, Matrix4x4 camProjectionMatrix, Matrix4x4 worldToCameraMatrix) { }
 
         //*************************************************************************************************************************//
         // PRIVATE FUNCTIONS                                                                                                       //
@@ -75,14 +91,11 @@ namespace Vonderportal
         private void OnWillRenderObject()
         {
             Camera currentCamera = Camera.current;
-
-
-            // Set camera clipping plane
-            Vector3 deltaTransform = transform.position - currentCamera.transform.position;
-            surfaceCam.nearClipPlane = Mathf.Max(deltaTransform.magnitude - meshRenderer.bounds.size.magnitude, 0.01f);
-
+            
             if (currentCamera.name == "SceneCamera")
                 return;
+
+            Matrix4x4 worldToCameraMatrix = currentCamera.worldToCameraMatrix;
 
             if (currentCamera.stereoEnabled)
             {
@@ -91,8 +104,10 @@ namespace Vonderportal
                     Vector3 eyePos = currentCamera.transform.TransformPoint(SteamVR.instance.eyes[0].pos);
                     Quaternion eyeRot = currentCamera.transform.rotation * SteamVR.instance.eyes[0].rot;
                     Matrix4x4 projectionMatrix = GetSteamVRProjectionMatrix(currentCamera, Valve.VR.EVREye.Eye_Left);
+                    
 
-                    RenderPlane(leftTexture, eyePos, eyeRot, projectionMatrix);
+
+                    RenderPlane(leftTexture, eyePos, eyeRot, projectionMatrix, worldToCameraMatrix);
                     meshRenderer.material.SetTexture("_LeftTex", leftTexture);
                 }
 
@@ -102,12 +117,12 @@ namespace Vonderportal
                     Quaternion eyeRot = currentCamera.transform.rotation * SteamVR.instance.eyes[1].rot;
                     Matrix4x4 projectionMatrix = GetSteamVRProjectionMatrix(currentCamera, Valve.VR.EVREye.Eye_Right);
 
-                    RenderPlane(rightTexture, eyePos, eyeRot, projectionMatrix);
+                    RenderPlane(rightTexture, eyePos, eyeRot, projectionMatrix, worldToCameraMatrix);
                     meshRenderer.material.SetTexture("_RightTex", rightTexture);
                 }
             } else {
                 RenderTexture target = leftTexture;
-                RenderPlane(target, currentCamera.transform.position, currentCamera.transform.rotation, currentCamera.projectionMatrix);
+                RenderPlane(target, currentCamera.transform.position, currentCamera.transform.rotation, currentCamera.projectionMatrix, worldToCameraMatrix);
                 meshRenderer.material.SetTexture("_LeftTex", target);
                 meshRenderer.material.SetFloat("_RecursiveRender", 1);  // Using Recursive render here will force the shader to only read from the LeftTex texture
             }
@@ -147,31 +162,14 @@ namespace Vonderportal
             }
         }
 
-        private void RenderPlane(RenderTexture targetTexture, Vector3 eyePosition, Quaternion eyeRotation, Matrix4x4 camProjectionMatrix)
+        private void RenderPlane(RenderTexture targetTexture, Vector3 eyePosition, Quaternion eyeRotation, Matrix4x4 camProjectionMatrix, Matrix4x4 worldToCameraMatrix)
         {
+            // Set camera clipping plane
+            Vector3 deltaTransform = transform.position - eyePosition;
+            surfaceCam.nearClipPlane = Mathf.Max(deltaTransform.magnitude - meshRenderer.bounds.size.magnitude, 0.01f);
+
             surfaceCam.targetTexture = targetTexture;
 
-            // Copy camera position/rotation/projection data into the reflectionCamera
-            SetSurfaceCamPosition(eyePosition, eyeRotation);
-
-            // Copy camera position/rotation/projection data into the reflectionCamera
-            SetSurfaceCamCullingMask();
-
-            if (useObliqueCulling)
-            {
-                // Change the project matrix to use oblique culling (only show things BEHIND the portal)
-                Vector4 clipPlane = CameraSpacePlane();
-
-                CalculateObliqueMatrix(ref camProjectionMatrix, clipPlane);
-                surfaceCam.projectionMatrix = camProjectionMatrix;
-            }
-            else
-            {
-                surfaceCam.projectionMatrix = camProjectionMatrix;
-            }
-
-        
-            // Update values that are used to generate the Skybox and whatnot.
             surfaceCam.farClipPlane = mainCamera.farClipPlane;
             surfaceCam.nearClipPlane = mainCamera.nearClipPlane;
             surfaceCam.orthographic = mainCamera.orthographic;
@@ -179,27 +177,39 @@ namespace Vonderportal
             surfaceCam.aspect = mainCamera.aspect;
             surfaceCam.orthographicSize = mainCamera.orthographicSize;
 
+
+            SetSurfaceCamPosition(eyePosition, eyeRotation, camProjectionMatrix, worldToCameraMatrix);
+
+            SetSurfaceCamCullingMask();
+
             surfaceCam.Render();
         }
 
 
-        // Given position/normal of the plane, calculates plane in camera space.
-        public Vector4 CameraSpacePlane()
-        {
-            Vector3 pos = transform.position;
-            Vector3 normal = transform.forward;
-            float sideSign = (transform.InverseTransformPoint(surfaceCam.transform.position).z < 0) ? 1.0f : -1.0f;
-
-            Vector3 offsetPos = pos + normal * portalSwitchDistance * (triggerZDirection ? -1 : 1);
-            Matrix4x4 m = surfaceCam.worldToCameraMatrix;
-            Vector3 cpos = m.MultiplyPoint(offsetPos);
-            Vector3 cnormal = m.MultiplyVector(normal).normalized * sideSign;
-            return new Vector4(cnormal.x, cnormal.y, cnormal.z, -Vector3.Dot(cpos, cnormal));
-        }
-
         //*************************************************************************************************************************//
         // STATIC FUNCTIONS                                                                                                        //
         //*************************************************************************************************************************//
+        // Given position/normal of the plane, calculates plane in camera space.
+
+
+        public static void CalculateObliqueMatrix(ref Matrix4x4 projection, Vector4 clipPlane)
+        {
+            Vector4 q = projection.inverse * new Vector4(
+                sgn(clipPlane.x),
+                sgn(clipPlane.y),
+                1.0f,
+                1.0f
+            );
+            Vector4 c = clipPlane * (2.0F / (Vector4.Dot(clipPlane, q)));
+
+            // third row = clip plane - fourth row
+            projection[2] = c.x - projection[3];
+            projection[6] = c.y - projection[7];
+            projection[10] = c.z - projection[11];
+            projection[14] = c.w - projection[15];
+        }
+
+
 
         public static Matrix4x4 GetSteamVRProjectionMatrix(Camera cam, Valve.VR.EVREye eye)
         {
@@ -223,24 +233,9 @@ namespace Vonderportal
             m.m33 = proj.m15;
             return m;
         }
-        private static void CalculateObliqueMatrix(ref Matrix4x4 projection, Vector4 clipPlane)
-        {
-            Vector4 q = projection.inverse * new Vector4(
-                sgn(clipPlane.x),
-                sgn(clipPlane.y),
-                1.0f,
-                1.0f
-            );
-            Vector4 c = clipPlane * (2.0F / (Vector4.Dot(clipPlane, q)));
 
-            // third row = clip plane - fourth row
-            projection[2] = c.x - projection[3];
-            projection[6] = c.y - projection[7];
-            projection[10] = c.z - projection[11];
-            projection[14] = c.w - projection[15];
-        }
         // Extended sign: returns -1, 0 or 1 based on sign of a
-        private static float sgn(float a)
+        protected static float sgn(float a)
         {
             if (a > 0.0f) return 1.0f;
             if (a < 0.0f) return -1.0f;
@@ -248,22 +243,30 @@ namespace Vonderportal
         }
     }
 
-    [CustomEditor(typeof(ActiveSurface))]
+    [CustomEditor(typeof(ActiveSurface), true)]
     public class ActiveSurfaceEditor : Editor
     {
+        SerializedProperty m_mainCamera;
+
+        protected virtual void OnEnable()
+        {
+            m_mainCamera = this.serializedObject.FindProperty("_mainCamera");
+        }
+
         public override void OnInspectorGUI()
         {
-            ActiveSurface activeSurface = target as ActiveSurface;
 
-            if (DimensionManager.dimensionManagerInstance != null)
+            serializedObject.Update();
+
+            if (DimensionManager.dimensionManagerInstance == null)
             {
-                activeSurface._mainCamera = (Camera)EditorGUILayout.ObjectField(activeSurface._mainCamera, typeof(Camera), true);
+                EditorGUILayout.ObjectField(m_mainCamera);
             }
             else
             {
-                
+                GUILayout.TextArea("Main  Camera allocated automatically from DimensionManager");
             }
-
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }

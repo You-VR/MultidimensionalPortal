@@ -188,6 +188,7 @@
     <Compile Include="Assets\VonderPortal\Scripts\PortalSurface.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\PortalSwitch.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\TrackedObject.cs" />
+    <Compile Include="Assets\VonderPortal\Scripts\TrackedObjectManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\VonderPortal\Materials\PortalShader.shader" />

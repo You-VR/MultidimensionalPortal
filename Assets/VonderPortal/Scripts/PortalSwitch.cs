@@ -7,12 +7,25 @@ namespace Vonderportal
 {
     public class PortalSwitch : MonoBehaviour
     {
-        bool allowSwitch = true;
+        public bool allowSwitch = true;
 
         public bool automatic = true;
 
         private DimensionManager dimensionManager { get { return DimensionManager.dimensionManagerInstance; } }
-        private Camera mainCamera { get { return dimensionManager.mainCamera; } }
+        private Camera mainCamera
+        {
+            get
+            {
+                if (dimensionManager != null)
+                {
+                    return dimensionManager.mainCamera;
+                }
+                else
+                {
+                    return portalSurface.mainCamera;
+                }
+            }
+        }
 
         private PortalSurface portalSurface { get { return GetComponent<PortalSurface>(); } }
         private SceneType toDimension;
@@ -25,7 +38,21 @@ namespace Vonderportal
             {
                 toDimension = portalSurface.toDimension;
                 toDimension = portalSurface.toDimension;
-            }
+            }         
+        }
+        private void OnDisable()
+        {
+            allowSwitch = false;
+        }
+        void OnEnable()
+        {
+            StartCoroutine(switchTimeOutCoroutine());
+        }
+
+        IEnumerator switchTimeOutCoroutine()
+        {
+            yield return new WaitForSeconds(3.0f);
+            allowSwitch = true;
         }
 
         private void Start()
@@ -33,21 +60,18 @@ namespace Vonderportal
             triggerCollider = this.gameObject.AddComponent<BoxCollider>();
             triggerCollider.size = new Vector3(1,1, 0.2f);
             triggerCollider.center = new Vector3(0, 0, 0.1f);
-
         }
 
         void Update()
         {
             Vector3 convertedPoint = portalSurface.transform.InverseTransformPoint(mainCamera.transform.position);
 
-            if ((convertedPoint.z > 0) != portalSurface.triggerZDirection && Mathf.Abs(convertedPoint.z) > portalSurface.portalSwitchDistance && triggerCollider.bounds.Contains(mainCamera.transform.position))
+            if ((convertedPoint.z > 0) != portalSurface.triggerZDirection && Mathf.Abs(convertedPoint.z) > portalSurface.clipPlaneOffset && triggerCollider.bounds.Contains(mainCamera.transform.position))
             {
-                if (allowSwitch)
+                if (allowSwitch && dimensionManager != null && portalSurface.active)
                 {
-                    dimensionManager.ChangeDimension(toDimension);
-                
+                    dimensionManager.ChangeDimension(toDimension);                
                 }
-
             }
         }
     }
