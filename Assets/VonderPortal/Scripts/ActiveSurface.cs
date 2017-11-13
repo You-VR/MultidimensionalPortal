@@ -9,7 +9,7 @@ namespace Vonderportal
     public class ActiveSurface : MonoBehaviour
     {
 
-        private DimensionManager dimensionManager { get { return DimensionManager.dimensionManagerInstance; } }
+        protected DimensionManager dimensionManager { get { return DimensionManager.dimensionManagerInstance; } }
         public Camera mainCamera { get
             {
                 if (dimensionManager != null) {
@@ -71,7 +71,7 @@ namespace Vonderportal
 
             surfaceCam = CreateCamera();
 
-            this.gameObject.layer = LayerMask.NameToLayer("Portal");
+            this.gameObject.layer = dimensionManager.activeDimensions.portalLayer;
 
             //Init Textures
             Vector2 texSize = new Vector2(mainCamera.pixelWidth, mainCamera.pixelHeight);

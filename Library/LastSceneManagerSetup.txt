@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/VonderPortal/Demo/Scenes/Dimensions/World_2.unity
+- path: Assets/VonderPortal/Demo/Scenes/Main.unity
   isLoaded: 1
   isActive: 1

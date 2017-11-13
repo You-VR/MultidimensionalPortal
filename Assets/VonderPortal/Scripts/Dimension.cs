@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEditor.Callbacks;
 
 namespace Vonderportal
 {
@@ -14,47 +15,39 @@ namespace Vonderportal
 
     public class Dimension : MonoBehaviour
     {
-
         public string dimensionName;
-        public Scene scene;
-        private SceneType sceneType;
 
-        int sceneLayer
+        public Scene scene { get { return SceneManager.GetSceneByName(dimensionName); } }
+        private SceneType sceneType;
+        public int layer { get; private set; }
+        bool layerInit = true;
+
+        private void OnEnable()
         {
-            get
-            {
-                switch (sceneType)
-                {
-                    case SceneType.last:
-                        return LayerMask.NameToLayer("LastScene");
-                    case SceneType.current:
-                        return LayerMask.NameToLayer("CurrentScene");
-                    case SceneType.next:
-                        return LayerMask.NameToLayer("NextScene");
-                    default:
-                        Debug.LogError("Scene layers not set up");
-                        return LayerMask.NameToLayer("Default");
-                }
-            }
+            SceneManager.sceneLoaded += onSceneLoad;
         }
 
-        public List<GameObject> rootObjects;
+        void OnDisable()
+        {
+            SceneManager.sceneLoaded -= onSceneLoad;
+        }
 
 
-
-
-
-        public void LoadScene(SceneType _sceneType)
+        public void LoadScene(SceneType _sceneType, int _layer)
         {
             sceneType = _sceneType;
+            if (layer != _layer) { layerInit = true; }
+            layer = _layer;
 
             if (!scene.isLoaded)
             {
-                StartCoroutine(LoadSceneAndInit());
+                AsyncOperation asyncLoad;
+                asyncLoad = SceneManager.LoadSceneAsync(dimensionName, LoadSceneMode.Additive);
             }
             else
             {
                 pruneSceneAndSetLayers();
+
             }
         }
 
@@ -62,77 +55,61 @@ namespace Vonderportal
         {
             SceneManager.UnloadSceneAsync(scene);
         }
-
-
-        IEnumerator LoadSceneAndInit()
+            
+        void onSceneLoad(Scene _scene, LoadSceneMode mode)
         {
-            AsyncOperation asyncLoad;
-
-            asyncLoad = SceneManager.LoadSceneAsync(dimensionName, LoadSceneMode.Additive);
-            if (asyncLoad.isDone)
+            if( _scene == scene)
             {
                 pruneSceneAndSetLayers();
-            }
-            else
-            {
-                while (!asyncLoad.isDone)
-                {
-                    yield return null;
-                }
-                pruneSceneAndSetLayers();
-            }
-
+            }        
         }
+
+        //[PostProcessSceneAttribute(0)]
+        //public static void OnPostprocessScene()
+        //{
+        //    Debug.Log("Test");
+        //}
+
         void pruneSceneAndSetLayers()
         {
-            scene = SceneManager.GetSceneByName(dimensionName);
             GameObject[] rootObjects = scene.GetRootGameObjects();
             foreach (GameObject rootObject in rootObjects)
             {
-               
-
-                // Remove everything in the persistant object
-                if (rootObject.name == "Persistant")
+                switch (rootObject.name)
                 {
-                    UnityEngine.Object.Destroy(rootObject);
-                }
-                else if (rootObject.name == "Tracked")
-                {
-                    Debug.Log("Tracked Objects in scene");
-                }
+                    case "Persistant":
+                        UnityEngine.Object.Destroy(rootObject);
+                        break;
 
-                // Deal with portals in other worlds
-                if (rootObject.name == "Portals")
-                {
-                    bool set;
-                    if (sceneType != SceneType.current) { set = false; }
-                    else { set = true; }
-
-                    Transform[] childrenTransforms = rootObject.GetComponentsInChildren<Transform>(true);
-                    foreach (Transform t in childrenTransforms)
-                    {
-
-                        PortalSwitch portalSwitch = t.GetComponentInChildren<PortalSwitch>(true);
-                        ActiveSurface activeSurface = t.GetComponentInChildren<ActiveSurface>(true);
-
-                        if( portalSwitch || activeSurface) { t.gameObject.SetActive(set); }
-                    }
+                    case "Tracked":
+                        Debug.Log("Tracked Objects in scene");
+                        break;
 
 
+                    case "Portals":
+                        bool set;
+                        if (sceneType != SceneType.current) { set = false; }
+                        else { set = true; }
 
+                        PortalSwitch portalSwitch = rootObject.GetComponentInChildren<PortalSwitch>(true);
+                        ActiveSurface activeSurface = rootObject.GetComponentInChildren<ActiveSurface>(true);
 
-                }
-                else
-                {
-                    Transform[] childrenTransforms = rootObject.GetComponentsInChildren<Transform>();
-                    foreach (Transform t in childrenTransforms)
-                    {
+                        if (portalSwitch || activeSurface) { rootObject.gameObject.SetActive(set); }
+
+                        break;
+
+                    default:
                         // Place game objects on the right layer
-                        t.gameObject.layer = sceneLayer;
-
+                        if (layerInit) {
+                            Transform[] childrenTransforms = rootObject.GetComponentsInChildren<Transform>();
+                            foreach (Transform t in childrenTransforms)
+                            {
+                                t.gameObject.layer = layer;
+                            }                                
+                        }
 
                         //Mute audiosources
-                        AudioSource[] audioSources = t.GetComponentsInChildren<AudioSource>();
+                        AudioSource[] audioSources = rootObject.GetComponentsInChildren<AudioSource>();
                         foreach (AudioSource audioSource in audioSources)
                         {
                             if (sceneType != SceneType.current)
@@ -144,9 +121,11 @@ namespace Vonderportal
                                 audioSource.mute = false;
                             }
                         }
-                    }
+                        break;
                 }
             }
+
+            layerInit = false;
         }
     }
 }

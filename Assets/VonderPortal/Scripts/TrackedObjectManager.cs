@@ -149,9 +149,6 @@ namespace Vonderportal
                         min = mean;
                         allocatedEIndex = eIndex;
                     }
-
-                    Debug.Log("Tracker-" + to_i + " EIndex: " + eIndex + " Mean: " + mean);
-
                 }
                 
 

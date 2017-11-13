@@ -11,11 +11,11 @@ namespace Vonderportal
 
         protected override void SetSurfaceCamCullingMask() {
             surfaceCam.ResetCullingMatrix();
-            surfaceCam.cullingMask &= ~(1 << LayerMask.NameToLayer("Portal"));
+            surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.portalLayer);
 
-            surfaceCam.cullingMask &= ~(1 << LayerMask.NameToLayer("LastScene"));
-            surfaceCam.cullingMask |=  (1 << LayerMask.NameToLayer("CurrentScene"));
-            surfaceCam.cullingMask &= ~(1 << LayerMask.NameToLayer("NextScene"));
+            surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.lastLayer);
+            surfaceCam.cullingMask |=  (1 << dimensionManager.activeDimensions.currLayer);
+            surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.nextLayer);
 
         }
 

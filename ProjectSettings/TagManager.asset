@@ -15,9 +15,9 @@ TagManager:
   - 
   - 
   - Portal
-  - LastScene
-  - CurrentScene
-  - NextScene
+  - SceneLayer1
+  - SceneLayer2
+  - SceneLayer3
   - 
   - 
   - 

@@ -13,25 +13,25 @@ namespace Vonderportal
 
         protected override void SetSurfaceCamCullingMask() {
             surfaceCam.ResetCullingMatrix();
-            surfaceCam.cullingMask &= ~(1 << LayerMask.NameToLayer("Portal"));
+            surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.portalLayer);
 
 
             switch (toDimension)
             {
                 case SceneType.last:
-                    surfaceCam.cullingMask |= (1 << LayerMask.NameToLayer("LastScene"));
-                    surfaceCam.cullingMask &= ~(1 << LayerMask.NameToLayer("CurrentScene"));
-                    surfaceCam.cullingMask &= ~(1 << LayerMask.NameToLayer("NextScene"));
+                    surfaceCam.cullingMask |= (1 << dimensionManager.activeDimensions.lastLayer);
+                    surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.currLayer);
+                    surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.nextLayer);
                     break;
                 case SceneType.current:
-                    surfaceCam.cullingMask &= ~(1 << LayerMask.NameToLayer("LastScene"));
-                    surfaceCam.cullingMask |=  (1 << LayerMask.NameToLayer("CurrentScene"));
-                    surfaceCam.cullingMask &= ~(1 << LayerMask.NameToLayer("NextScene"));
+                    surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.lastLayer);
+                    surfaceCam.cullingMask |= (1 << dimensionManager.activeDimensions.currLayer);
+                    surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.nextLayer);
                     break;
                 case SceneType.next:
-                    surfaceCam.cullingMask &= ~(1 << LayerMask.NameToLayer("LastScene"));
-                    surfaceCam.cullingMask &= ~(1 << LayerMask.NameToLayer("CurrentScene"));
-                    surfaceCam.cullingMask |=  (1 << LayerMask.NameToLayer("NextScene"));
+                    surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.lastLayer);
+                    surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.currLayer);
+                    surfaceCam.cullingMask |= (1 << dimensionManager.activeDimensions.nextLayer);
                     break;
             }
         }
