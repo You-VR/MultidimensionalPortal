@@ -129,6 +129,7 @@
     <Compile Include="Assets\_Plugins\SteamVR\Editor\SteamVR_Settings.cs" />
     <Compile Include="Assets\_Plugins\SteamVR\Editor\SteamVR_SkyboxEditor.cs" />
     <Compile Include="Assets\_Plugins\SteamVR\Editor\SteamVR_Update.cs" />
+    <Compile Include="Assets\VonderPortal\Editor\EditorSceneLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\VonderPortal\Materials\PortalShader.shader" />

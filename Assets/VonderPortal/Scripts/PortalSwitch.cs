@@ -59,14 +59,18 @@ namespace Vonderportal
         {
             triggerCollider = this.gameObject.AddComponent<BoxCollider>();
             triggerCollider.size = new Vector3(1,1, 0.2f);
-            triggerCollider.center = new Vector3(0, 0, 0.1f);
+            triggerCollider.center = new Vector3(0, 0, -0.1f);
         }
 
         void Update()
         {
             Vector3 convertedPoint = portalSurface.transform.InverseTransformPoint(mainCamera.transform.position);
 
-            if ((convertedPoint.z > 0) != portalSurface.triggerZDirection && Mathf.Abs(convertedPoint.z) > portalSurface.clipPlaneOffset && triggerCollider.bounds.Contains(mainCamera.transform.position))
+            bool inFrontOfPlane       = (convertedPoint.z > 0) != portalSurface.triggerZDirection;
+            bool withinSwitchDistance = Mathf.Abs(convertedPoint.z) > portalSurface.clipPlaneOffset;
+            bool withinBounds         = triggerCollider.bounds.Contains(mainCamera.transform.position);
+
+            if (withinSwitchDistance && inFrontOfPlane && withinBounds)
             {
                 if (allowSwitch && dimensionManager != null && portalSurface.active)
                 {
