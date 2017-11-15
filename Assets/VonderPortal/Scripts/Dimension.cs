@@ -82,7 +82,7 @@ namespace Vonderportal
                         break;
 
                     case "Tracked":
-                        Debug.Log("Tracked Objects in scene");
+                        //Debug.Log("Tracked Objects in scene");
                         break;
 
 

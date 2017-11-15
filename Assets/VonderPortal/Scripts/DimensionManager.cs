@@ -123,8 +123,6 @@ namespace Vonderportal
             }
         }
     }
-
-
     public class DimensionManager : MonoBehaviour
     {
 
@@ -188,6 +186,14 @@ namespace Vonderportal
             }
 
             dimensions = new List<Dimension>();
+#if UNITY_EDITOR
+            // If single dimension was loaded, not root
+            if (EditorSceneLoader.dimension_names_override != null)
+            {
+                dimension_names = EditorSceneLoader.dimension_names_override;
+            }
+#endif
+
             foreach (string dimension_name in dimension_names)
             {
                 if (!scenesInBuild.Contains(dimension_name))
