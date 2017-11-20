@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/VonderPortal/Demo/Scenes/Main.unity
+    path: Assets/VonderPortal/Demo/Scenes/Root.unity
     guid: d6fc7cb4df354fb4ab140ef8094dea0c
   - enabled: 1
     path: Assets/VonderPortal/Demo/Scenes/Dimensions/World_1.unity
