@@ -18,6 +18,9 @@ namespace Vonderportal
         public string dimensionName;
 
         public Scene scene { get { return SceneManager.GetSceneByName(dimensionName); } }
+        public TrackedObjectManager trackedObjectManager { get { return TrackedObjectManager.trackedObjectManagerInstance; } }
+
+
         private SceneType sceneType;
         public int layer { get; private set; }
         bool layerInit = true;
@@ -82,6 +85,41 @@ namespace Vonderportal
                         break;
 
                     case "Tracked":
+                        if (sceneType == SceneType.current)
+                        {
+                            rootObject.SetActive(true);
+
+                            TrackedObject[] oldTrackedObjects = trackedObjectManager.gameObject.GetComponentsInChildren<TrackedObject>(true);
+                            TrackedObject[] newTrackedObjects = rootObject.GetComponentsInChildren<TrackedObject>(true);
+                            foreach (TrackedObject newTrackedObject in newTrackedObjects)
+                            {
+                                TrackedObject.VonderTrackedObject newTrackedObjectIndex = newTrackedObject.trackedObjectIndex;
+
+                                foreach (TrackedObject oldTrackedObject in oldTrackedObjects)
+                                {
+                                    if( newTrackedObjectIndex == oldTrackedObject.trackedObjectIndex)
+                                    {
+                                        foreach (Transform oldTrackedObjectChild in oldTrackedObject.transform)
+                                        {
+                                            Destroy(oldTrackedObjectChild.gameObject);
+                                        }
+
+
+                                        foreach (Transform newTrackedObjectChild in newTrackedObject.transform)
+                                        {
+                                            
+
+                                            Instantiate(    newTrackedObjectChild.gameObject, 
+                                                            newTrackedObjectChild.localPosition, 
+                                                            newTrackedObjectChild.localRotation, 
+                                                            oldTrackedObject.transform);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        rootObject.SetActive(false);
+
                         //Debug.Log("Tracked Objects in scene");
                         break;
 

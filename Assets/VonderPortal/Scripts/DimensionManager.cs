@@ -127,6 +127,7 @@ namespace Vonderportal
     {
 
         public Camera mainCamera;
+        public TrackedObjectManager trackedObjectManager;
         public string[] dimension_names;
 
         private List<Dimension> dimensions;
@@ -204,6 +205,7 @@ namespace Vonderportal
                 {
                     Dimension newDimension = this.gameObject.AddComponent<Dimension>();
                     newDimension.dimensionName = dimension_name;
+                    newDimension.hideFlags = HideFlags.HideInInspector;
                     dimensions.Add(newDimension);
                 }
             }
