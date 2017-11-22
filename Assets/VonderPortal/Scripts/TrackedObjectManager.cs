@@ -10,7 +10,7 @@ namespace Vonderportal
     public class TrackedObjectManager : MonoBehaviour
     {
 
-        static TrackedObjectManager trackedObjectManagerInstance;
+        public static TrackedObjectManager trackedObjectManagerInstance;
 
         public TrackedObject[] trackedObjects;
 
@@ -34,10 +34,9 @@ namespace Vonderportal
             if (trackedObjectManagerInstance == null) { trackedObjectManagerInstance = this; }
             else
             {
-                Debug.LogError("Only one instance of tracked object manager allowed");
-            }
-
-            
+                Debug.Log("Only one instance of tracked object manager allowed");
+                Destroy(this);
+            }            
         }
 
         void Start()
