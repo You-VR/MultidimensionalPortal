@@ -43,7 +43,7 @@ namespace Vonderportal
 
         public float clipPlaneOffset = 0.1f;
         [HideInInspector]
-        public bool triggerZDirection;
+        public Vector3 triggerZDirection;
 
 
         // Private Variables
@@ -83,9 +83,7 @@ namespace Vonderportal
         }
         public void setTriggerZDirection()
         {
-            //Set Trigger Z Direction
-            Vector3 convertedPoint = this.transform.InverseTransformPoint(mainCamera.transform.position);
-            triggerZDirection = (convertedPoint.z > 0);
+            triggerZDirection = this.transform.forward;
         }
 
         private void OnWillRenderObject()

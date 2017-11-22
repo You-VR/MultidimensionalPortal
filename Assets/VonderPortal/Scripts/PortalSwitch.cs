@@ -49,6 +49,11 @@ namespace Vonderportal
             StartCoroutine(switchTimeOutCoroutine());
         }
 
+        private void OnDrawGizmos()
+        {
+
+        }
+
         IEnumerator switchTimeOutCoroutine()
         {
             yield return new WaitForSeconds(3.0f);
@@ -66,11 +71,11 @@ namespace Vonderportal
         {
             Vector3 convertedPoint = portalSurface.transform.InverseTransformPoint(mainCamera.transform.position);
 
-            bool inFrontOfPlane       = (convertedPoint.z > 0) != portalSurface.triggerZDirection;
+            //bool inFrontOfPlane       = (convertedPoint.z > 0) != portalSurface.triggerZDirection;
             bool withinSwitchDistance = Mathf.Abs(convertedPoint.z) > portalSurface.clipPlaneOffset;
             bool withinBounds         = triggerCollider.bounds.Contains(mainCamera.transform.position);
 
-            if (withinSwitchDistance && inFrontOfPlane && withinBounds)
+            if (withinSwitchDistance  && withinBounds)
             {
                 if (allowSwitch && dimensionManager != null && portalSurface.active)
                 {

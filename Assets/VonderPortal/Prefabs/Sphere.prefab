@@ -9,46 +9,46 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1522539968774490}
+  m_RootGameObject: {fileID: 1704917883504974}
   m_IsPrefabParent: 1
---- !u!1 &1522539968774490
+--- !u!1 &1704917883504974
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4647023274398468}
-  - component: {fileID: 33372654896037882}
-  - component: {fileID: 23077963020901284}
-  - component: {fileID: 114035275026917376}
-  - component: {fileID: 114476467102162532}
-  m_Layer: 28
-  m_Name: PortalPlane
+  - component: {fileID: 4619487614077944}
+  - component: {fileID: 33213914059499382}
+  - component: {fileID: 135377614168755718}
+  - component: {fileID: 23335417263997510}
+  - component: {fileID: 114803531289938764}
+  m_Layer: 0
+  m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4647023274398468
+--- !u!4 &4619487614077944
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1522539968774490}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 1.1, z: -1.05}
-  m_LocalScale: {x: 1, y: 2.2, z: 1}
+  m_GameObject: {fileID: 1704917883504974}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.36547852, y: 1.5385742, z: -1.845}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!23 &23077963020901284
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &23335417263997510
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1522539968774490}
+  m_GameObject: {fileID: 1704917883504974}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -56,7 +56,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: f0f7b397da70b3b438aa6bcb4cc00d04, type: 2}
+  - {fileID: 2100000, guid: 4b7784602e2721c47beaea6be0a8b30f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -75,38 +75,33 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &33372654896037882
+--- !u!33 &33213914059499382
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1522539968774490}
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114035275026917376
+  m_GameObject: {fileID: 1704917883504974}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &114803531289938764
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1522539968774490}
+  m_GameObject: {fileID: 1704917883504974}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57fdc7e25620d2449b8d33d92423bb36, type: 3}
+  m_Script: {fileID: 11500000, guid: c62d41e7106849b47a948cf6c71ec678, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainCamera: {fileID: 0}
-  clipPlaneOffset: 0.1
-  triggerZDirection: {x: 0, y: 0, z: 0}
-  toDimension: 2
---- !u!114 &114476467102162532
-MonoBehaviour:
+--- !u!135 &135377614168755718
+SphereCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1522539968774490}
+  m_GameObject: {fileID: 1704917883504974}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06d4b34a630ba8743abaf45d4d5eed91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  allowSwitch: 1
-  automatic: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
