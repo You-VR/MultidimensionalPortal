@@ -183,7 +183,6 @@
     <Compile Include="Assets\CameraRigRegistration.cs" />
     <Compile Include="Assets\VonderPortal\Demo\temp.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\ActiveSurface.cs" />
-    <Compile Include="Assets\VonderPortal\Scripts\deform.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\Dimension.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\DimensionManager.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\EditorSceneLoader.cs" />

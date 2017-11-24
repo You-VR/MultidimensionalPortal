@@ -62,10 +62,10 @@ namespace Vonderportal
                 bool isFree = (i % gridSize > 1) && (i > gridSize) && (i < originalVertices.Length - gridSize);
 
 
-                if (dist.magnitude < threshold && isFree)
+                if (dist.z > 0 && dist.magnitude < threshold && isFree)
                 {
 
-                    displacedVertices[i] = originalVertices[i] + (1.0f / dist.magnitude * transform.InverseTransformDirection(transform.forward));
+                    displacedVertices[i] = originalVertices[i] + ((threshold - dist.magnitude ) * transform.InverseTransformDirection(transform.forward));
                 }
                 else
                 {
