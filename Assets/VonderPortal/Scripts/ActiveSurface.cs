@@ -130,28 +130,17 @@ namespace Vonderportal
             if(surfaceCam == null)
             {
                 //Create Portal Camera
-                Camera newCam = Instantiate(mainCamera);
-                newCam.name = cameraName + "_camera" ;
-                newCam.transform.parent = this.transform;
+                GameObject camObject = new GameObject();
+                camObject.name = cameraName + "_camera";
+                camObject.transform.parent = this.transform;
 
-                // Get rid of extra components
-                if (newCam.GetComponent<AudioListener>())
-                {
-                    Destroy(newCam.GetComponent<AudioListener>());
-                }
-                if (newCam.GetComponent<FlareLayer>())
-                {
-                    Destroy(newCam.GetComponent<FlareLayer>());
-                }
-                if (newCam.GetComponent<GUILayer>())
-                {
-                    Destroy(newCam.GetComponent<GUILayer>());
-                }
-                foreach (Transform child in newCam.transform)
-                {
-                    Destroy(child.gameObject);
-                }
 
+                camObject.AddComponent<Camera>(mainCamera.GetComponent<Camera>());
+
+                //camObject.AddComponent<UnityEngine.PostProcessing.PostProcessingBehaviour>(mainCamera.GetComponent<UnityEngine.PostProcessing.PostProcessingBehaviour>());
+      
+
+                Camera newCam = camObject.GetComponent<Camera>();
                 newCam.enabled = false;
                 return newCam;
             } else
@@ -188,9 +177,6 @@ namespace Vonderportal
         //*************************************************************************************************************************//
         // STATIC FUNCTIONS                                                                                                        //
         //*************************************************************************************************************************//
-        // Given position/normal of the plane, calculates plane in camera space.
-
-
         public static void CalculateObliqueMatrix(ref Matrix4x4 projection, Vector4 clipPlane)
         {
             Vector4 q = projection.inverse * new Vector4(

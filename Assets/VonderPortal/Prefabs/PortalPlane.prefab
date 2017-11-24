@@ -97,6 +97,7 @@ MonoBehaviour:
   clipPlaneOffset: 0.1
   triggerZDirection: {x: 0, y: 0, z: 0}
   toDimension: 2
+  threshold: 0.3
 --- !u!114 &114476467102162532
 MonoBehaviour:
   m_ObjectHideFlags: 1

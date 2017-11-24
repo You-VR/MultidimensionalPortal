@@ -143,7 +143,15 @@ namespace Vonderportal
                             foreach (Transform t in childrenTransforms)
                             {
                                 t.gameObject.layer = layer;
-                            }                                
+                            }
+
+                            //Mute audiosources
+                            Light[] lightSources = rootObject.GetComponentsInChildren<Light>();
+                            foreach (Light light in lightSources)
+                            {
+                                light.cullingMask = 0;
+                                light.cullingMask |= ( 1 << layer);
+                            }
                         }
 
                         //Mute audiosources

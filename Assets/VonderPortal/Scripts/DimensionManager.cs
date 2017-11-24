@@ -6,11 +6,6 @@ using UnityEngine.SceneManagement;
 
 namespace Vonderportal
 {
-    class LayerManager {
-
-    }
-
-
     public class ActiveDimensions
     {
         public Dimension lastDimension { get { return activeDimensions[0]; } }
@@ -62,12 +57,15 @@ namespace Vonderportal
         private int SceneLayer2;
         private int SceneLayer3;
 
+        public int defaultLayer;
+
         private int[] sceneLayers = new int[3];
 
         private Dimension[] activeDimensions = new Dimension[3];
 
         public ActiveDimensions()
         {
+            defaultLayer = 0;
             PortalLayer = LayerMask.NameToLayer("Portal");
             SceneLayer1 = LayerMask.NameToLayer("SceneLayer1");
             SceneLayer2 = LayerMask.NameToLayer("SceneLayer2");
@@ -217,20 +215,21 @@ namespace Vonderportal
         void Start()
         {
             onChangeDimension(1);
-
+            Debug.Log(activeDimensions.defaultLayer);
+            mainCamera.cullingMask |= (1 <<  activeDimensions.defaultLayer);
             mainCamera.cullingMask |= (1 <<  activeDimensions.currLayer);
             mainCamera.cullingMask &= ~(1 << activeDimensions.nextLayer);
 
         }
-        //void OnGUI()
-        //{
-        //    if (GUI.Button(new Rect(Screen.width / 2 - 50, 5, 100, 30), "Next Level"))
-        //    {
-        //        Debug.Log("Button");
-        //        if (onChangeDimension != null)
-        //            ChangeDimension(SceneType.next);
-        //    }
-        //}
+        void OnGUI()
+        {
+            if (GUI.Button(new Rect(Screen.width / 2 - 50, 5, 100, 30), "Next Level"))
+            {
+                Debug.Log("Button");
+                if (onChangeDimension != null)
+                    ChangeDimension(SceneType.next);
+            }
+        }
 
         public void ChangeLoadedDimensions(int _dimensionIndex)
         {
@@ -248,6 +247,7 @@ namespace Vonderportal
         }
         public void ChangeMainCameraCullingMask(int _dimensionIndex)
         {
+            mainCamera.cullingMask |= (1 << activeDimensions.defaultLayer);
             mainCamera.cullingMask &= ~(1 << activeDimensions.lastLayer);
             mainCamera.cullingMask |= (1 << activeDimensions.currLayer);
             mainCamera.cullingMask &= ~(1 << activeDimensions.nextLayer);
