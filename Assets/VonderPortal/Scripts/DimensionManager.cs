@@ -14,43 +14,17 @@ namespace Vonderportal
 
         public int portalLayer { get { return PortalLayer;         } }
 
-        public int lastLayer   {
-            get {
-                if(lastDimension != null)
-                {
-                    return lastDimension.layer;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-        }
-        public int currLayer   {
-            get {
-                if (currDimension != null)
-                {
-                    return currDimension.layer;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-        }
+        public int lastLayer   {  get {
+                if(lastDimension != null) { return lastDimension.layer;  }
+                else                      { return 0;                    } } }
 
-        public int nextLayer   {
-            get {
-                if (nextDimension != null)
-                {
-                    return nextDimension.layer;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-        }
+        public int currLayer   { get {
+                if (currDimension != null) { return currDimension.layer; }
+                else                       { return 0;                   } } }
+
+        public int nextLayer   { get {
+                if (nextDimension != null) { return nextDimension.layer; }
+                else                       { return 0;                   } } }
 
         private int PortalLayer;
         private int SceneLayer1;
@@ -62,9 +36,12 @@ namespace Vonderportal
         private int[] sceneLayers = new int[3];
 
         private Dimension[] activeDimensions = new Dimension[3];
+        private bool unidirectional;
 
-        public ActiveDimensions()
+        public ActiveDimensions( bool _unidirectional)
         {
+            unidirectional = _unidirectional;
+
             defaultLayer = 0;
             PortalLayer = LayerMask.NameToLayer("Portal");
             SceneLayer1 = LayerMask.NameToLayer("SceneLayer1");
@@ -83,15 +60,22 @@ namespace Vonderportal
 
         public void set(Dimension[] dimensions)
         {
+            // Unload layers that are no longer in the list
+
             var unloadDimensions = activeDimensions.Except(dimensions);
             activeDimensions = dimensions;
-
-            foreach (Dimension unloadDimension in unloadDimensions)
+            if (!unidirectional)
             {
-                if (unloadDimension != null) {
-                    unloadDimension.UnloadScene(); }
+                foreach (Dimension unloadDimension in unloadDimensions)
+                {
+                    if (unloadDimension != null)
+                    {
+                        unloadDimension.UnloadScene();
+                    }
+                }
             }
 
+            // Find unallocated scene layers
             List<int> usedLayers = new List<int>();
             foreach(Dimension dimension in activeDimensions)
             {
@@ -105,7 +89,15 @@ namespace Vonderportal
                 if(activeDimensions[0].layer != 0) { layer = activeDimensions[0].layer; }
                 else { layer = unusedLayers[i++]; }
 
-                activeDimensions[0].LoadScene(SceneType.last, layer);
+                if (unidirectional)
+                {
+                    activeDimensions[0].UnloadScene();
+                    Debug.Log("Unload");
+                } else
+                {
+                    activeDimensions[0].LoadScene(SceneType.last, layer);
+                }
+                    
             }
             if (activeDimensions[1] != null) {
                 if (activeDimensions[1].layer != 0) { layer = activeDimensions[1].layer; }
@@ -123,49 +115,46 @@ namespace Vonderportal
     }
     public class DimensionManager : MonoBehaviour
     {
+        //*************************************************************************************************************************//
+        // PUBLIC PROPERTIES                                                                                                       //
+        //*************************************************************************************************************************//
+        public static DimensionManager dimensionManagerInstance;
 
+        // SET IN EDITOR
         public Camera mainCamera;
         public TrackedObjectManager trackedObjectManager;
         public string[] dimension_names;
+        public bool unidirectional = true;
 
-        private List<Dimension> dimensions;
+        // OTHER
         public ActiveDimensions activeDimensions;
         public int dimensionIndex { get; private set; }
 
-        public static DimensionManager dimensionManagerInstance;
-
+        //  EVENTS
         public delegate void ChangeDimensionHandler(int dimensionIndex);
         public static event ChangeDimensionHandler onChangeDimension;
-        public void ChangeDimension(SceneType sceneType) {
-            switch (sceneType)
-            {
-                case SceneType.last:
-                    onChangeDimension.Invoke(dimensionIndex - 1);
-                    break;
-                case SceneType.current:
-                    onChangeDimension.Invoke(dimensionIndex);
-                    break;
-                case SceneType.next:
-                    onChangeDimension.Invoke(dimensionIndex + 1);
-                    break;
-            }            
-        }
+
+        //*************************************************************************************************************************//
+        // PRIVATE PROPERTIES                                                                                                      //
+        //*************************************************************************************************************************//
+        private List<Dimension> dimensions;
+
+
+        //*************************************************************************************************************************//
+        // PRIVATE FUNCTIONS                                                                                                       //
+        //*************************************************************************************************************************//
 
         void OnEnable()
         {
             onChangeDimension += ChangeLoadedDimensions;
             onChangeDimension += ChangeMainCameraCullingMask;
         }
-
-
         void OnDisable()
         {
             onChangeDimension -= ChangeLoadedDimensions;
             onChangeDimension -= ChangeMainCameraCullingMask;
 
-
         }
-
         private void Awake()
         {
             if (dimensionManagerInstance == null) { dimensionManagerInstance = this; }
@@ -185,6 +174,7 @@ namespace Vonderportal
             }
 
             dimensions = new List<Dimension>();
+
 #if UNITY_EDITOR
             // If single dimension was loaded, not root
             if (EditorSceneLoader.dimension_names_override != null)
@@ -208,26 +198,29 @@ namespace Vonderportal
                 }
             }
 
-            activeDimensions = new ActiveDimensions();
+            activeDimensions = new ActiveDimensions(unidirectional);
         }
 
         // Use this for initialization
         void Start()
         {
             onChangeDimension(1);
-            Debug.Log(activeDimensions.defaultLayer);
-            mainCamera.cullingMask |= (1 <<  activeDimensions.defaultLayer);
-            mainCamera.cullingMask |= (1 <<  activeDimensions.currLayer);
-            mainCamera.cullingMask &= ~(1 << activeDimensions.nextLayer);
-
+            ChangeMainCameraCullingMask(1);
         }
-        void OnGUI()
+
+        public void ChangeDimension(SceneType sceneType)
         {
-            if (GUI.Button(new Rect(Screen.width / 2 - 50, 5, 100, 30), "Next Level"))
+            switch (sceneType)
             {
-                Debug.Log("Button");
-                if (onChangeDimension != null)
-                    ChangeDimension(SceneType.next);
+                case SceneType.last:
+                    onChangeDimension.Invoke(dimensionIndex - 1);
+                    break;
+                case SceneType.current:
+                    onChangeDimension.Invoke(dimensionIndex);
+                    break;
+                case SceneType.next:
+                    onChangeDimension.Invoke(dimensionIndex + 1);
+                    break;
             }
         }
 
@@ -236,8 +229,7 @@ namespace Vonderportal
             if (_dimensionIndex <= dimensions.Count)
             {
                 dimensionIndex = _dimensionIndex;
-                assignDimensions();
-
+                AssignDimensions();
             }
             else
             {
@@ -251,11 +243,10 @@ namespace Vonderportal
             mainCamera.cullingMask &= ~(1 << activeDimensions.lastLayer);
             mainCamera.cullingMask |= (1 << activeDimensions.currLayer);
             mainCamera.cullingMask &= ~(1 << activeDimensions.nextLayer);
-
         }
 
 
-        void assignDimensions()
+        void AssignDimensions()
         {
             // Check dimension index is valid
             if (dimensionIndex < 0 || dimensionIndex > dimensions.Count)
@@ -300,5 +291,20 @@ namespace Vonderportal
                     break;
             }
         }
+
+        //*************************************************************************************************************************//
+        // GUI FUNCTIONS                                                                                                           //
+        //*************************************************************************************************************************//
+
+        void OnGUI()
+        {
+            if (GUI.Button(new Rect(Screen.width / 2 - 50, 5, 100, 30), "Next Level"))
+            {
+                if (onChangeDimension != null)
+                    ChangeDimension(SceneType.next);
+            }
+        }
     }
+
+
 }

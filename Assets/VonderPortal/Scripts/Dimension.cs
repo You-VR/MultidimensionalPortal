@@ -109,10 +109,12 @@ namespace Vonderportal
                                         {
                                             
 
-                                            Instantiate(    newTrackedObjectChild.gameObject, 
-                                                            newTrackedObjectChild.localPosition, 
-                                                            newTrackedObjectChild.localRotation, 
-                                                            oldTrackedObject.transform);
+                                            GameObject newObject = Instantiate( newTrackedObjectChild.gameObject, 
+                                                                                newTrackedObjectChild.localPosition, 
+                                                                                newTrackedObjectChild.localRotation, 
+                                                                                oldTrackedObject.transform);
+
+                                            newObject.layer = layer;
                                         }
                                     }
                                 }
