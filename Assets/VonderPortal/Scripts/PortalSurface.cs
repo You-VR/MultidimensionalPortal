@@ -80,27 +80,26 @@ namespace Vonderportal
 
         protected override void SetSurfaceCamCullingMask() {
             surfaceCam.ResetCullingMatrix();
-            surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.portalLayer);
 
+			int cullingMask = 0;
+			foreach (int defaultLayer in dimensionManager.activeDimensions.defaultLayers) {
+				cullingMask |=  (1 << defaultLayer);
+			}
 
             switch (toDimension)
             {
                 case SceneType.last:
-                    surfaceCam.cullingMask |= (1 << dimensionManager.activeDimensions.lastLayer);
-                    surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.currLayer);
-                    surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.nextLayer);
+                    cullingMask |= (1 << dimensionManager.activeDimensions.lastLayer);
                     break;
                 case SceneType.current:
-                    surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.lastLayer);
-                    surfaceCam.cullingMask |= (1 << dimensionManager.activeDimensions.currLayer);
-                    surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.nextLayer);
+                    cullingMask |= (1 << dimensionManager.activeDimensions.currLayer);
                     break;
                 case SceneType.next:
-                    surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.lastLayer);
-                    surfaceCam.cullingMask &= ~(1 << dimensionManager.activeDimensions.currLayer);
-                    surfaceCam.cullingMask |= (1 << dimensionManager.activeDimensions.nextLayer);
+                    cullingMask |= (1 << dimensionManager.activeDimensions.nextLayer);
                     break;
             }
+
+			surfaceCam.cullingMask = cullingMask;
         }
 
 

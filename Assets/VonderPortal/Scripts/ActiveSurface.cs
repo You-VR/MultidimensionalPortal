@@ -137,11 +137,13 @@ namespace Vonderportal
 
                 camObject.AddComponent<Camera>(mainCamera.GetComponent<Camera>());
 
-                //camObject.AddComponent<UnityEngine.PostProcessing.PostProcessingBehaviour>(mainCamera.GetComponent<UnityEngine.PostProcessing.PostProcessingBehaviour>());
+                camObject.AddComponent<UnityEngine.PostProcessing.PostProcessingBehaviour>(mainCamera.GetComponent<UnityEngine.PostProcessing.PostProcessingBehaviour>());
       
 
                 Camera newCam = camObject.GetComponent<Camera>();
+				//newCam.RemoveAllCommandBuffers();
                 newCam.enabled = false;
+
                 return newCam;
             } else
             {

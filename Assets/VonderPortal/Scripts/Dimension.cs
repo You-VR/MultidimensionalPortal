@@ -109,12 +109,17 @@ namespace Vonderportal
                                         {
                                             
 
-                                            GameObject newObject = Instantiate( newTrackedObjectChild.gameObject, 
-                                                                                newTrackedObjectChild.localPosition, 
-                                                                                newTrackedObjectChild.localRotation, 
-                                                                                oldTrackedObject.transform);
+                                            GameObject newObject = Instantiate( newTrackedObjectChild.gameObject,
+                                                                                oldTrackedObject.transform,
+																				false);
 
-                                            newObject.layer = layer;
+											Transform[] newObjectChild =newObject.GetComponentsInChildren<Transform>();
+											foreach (Transform t in newObjectChild)
+											{
+												t.gameObject.layer = layer;
+											}
+
+
                                         }
                                     }
                                 }

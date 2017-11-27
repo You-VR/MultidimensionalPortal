@@ -26,12 +26,26 @@ namespace Vonderportal
                 if (nextDimension != null) { return nextDimension.layer; }
                 else                       { return 0;                   } } }
 
+		public int currentCullingMask{ 
+			get{
+				int cullingMask = 0;
+
+				foreach (int defaultLayer in defaultLayers) {
+					cullingMask |=  (1 << defaultLayer);
+				}
+				cullingMask |=  (1 << PortalLayer);
+				cullingMask |=  (1 << currLayer);
+
+				return cullingMask;
+			}
+		}
+
         private int PortalLayer;
         private int SceneLayer1;
         private int SceneLayer2;
         private int SceneLayer3;
 
-        public int defaultLayer;
+        public int[] defaultLayers;
 
         private int[] sceneLayers = new int[3];
 
@@ -42,7 +56,14 @@ namespace Vonderportal
         {
             unidirectional = _unidirectional;
 
-            defaultLayer = 0;
+
+			// Default Layers
+			defaultLayers = new int[]{
+				LayerMask.NameToLayer("Default"),
+				//LayerMask.NameToLayer("TransparentFX")
+			};
+
+
             PortalLayer = LayerMask.NameToLayer("Portal");
             SceneLayer1 = LayerMask.NameToLayer("SceneLayer1");
             SceneLayer2 = LayerMask.NameToLayer("SceneLayer2");
@@ -239,10 +260,8 @@ namespace Vonderportal
         }
         public void ChangeMainCameraCullingMask(int _dimensionIndex)
         {
-            mainCamera.cullingMask |= (1 << activeDimensions.defaultLayer);
-            mainCamera.cullingMask &= ~(1 << activeDimensions.lastLayer);
-            mainCamera.cullingMask |= (1 << activeDimensions.currLayer);
-            mainCamera.cullingMask &= ~(1 << activeDimensions.nextLayer);
+			mainCamera.cullingMask = activeDimensions.currentCullingMask;
+
         }
 
 
