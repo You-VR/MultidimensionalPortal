@@ -184,7 +184,7 @@
     <Compile Include="Assets\_Plugins\SteamVR\Scripts\SteamVR_Utils.cs" />
     <Compile Include="Assets\VonderPortal\Demo\temp.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\ActiveSurface.cs" />
-    <Compile Include="Assets\VonderPortal\Scripts\deform.cs" />
+    <Compile Include="Assets\VonderPortal\Scripts\CameraRigRegistration.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\Dimension.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\DimensionManager.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\EditorSceneLoader.cs" />
@@ -192,6 +192,10 @@
     <Compile Include="Assets\VonderPortal\Scripts\PortalSurface.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\PortalSwitch.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\StageGizmo.cs" />
+<<<<<<< HEAD
+=======
+    <Compile Include="Assets\VonderPortal\Scripts\Tools.cs" />
+>>>>>>> be7b4c109c2a8baa030cb61df9c5aa1868abcaab
     <Compile Include="Assets\VonderPortal\Scripts\TrackedObject.cs" />
     <Compile Include="Assets\VonderPortal\Scripts\TrackedObjectManager.cs" />
   </ItemGroup>

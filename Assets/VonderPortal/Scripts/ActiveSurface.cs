@@ -43,7 +43,7 @@ namespace Vonderportal
 
         public float clipPlaneOffset = 0.1f;
         [HideInInspector]
-        public bool triggerZDirection;
+        public Vector3 triggerZDirection;
 
 
         // Private Variables
@@ -83,9 +83,7 @@ namespace Vonderportal
         }
         public void setTriggerZDirection()
         {
-            //Set Trigger Z Direction
-            Vector3 convertedPoint = this.transform.InverseTransformPoint(mainCamera.transform.position);
-            triggerZDirection = (convertedPoint.z > 0);
+            triggerZDirection = this.transform.forward;
         }
 
         private void OnWillRenderObject()
@@ -132,29 +130,20 @@ namespace Vonderportal
             if(surfaceCam == null)
             {
                 //Create Portal Camera
-                Camera newCam = Instantiate(mainCamera);
-                newCam.name = cameraName + "_camera" ;
-                newCam.transform.parent = this.transform;
+                GameObject camObject = new GameObject();
+                camObject.name = cameraName + "_camera";
+                camObject.transform.parent = this.transform;
 
-                // Get rid of extra components
-                if (newCam.GetComponent<AudioListener>())
-                {
-                    Destroy(newCam.GetComponent<AudioListener>());
-                }
-                if (newCam.GetComponent<FlareLayer>())
-                {
-                    Destroy(newCam.GetComponent<FlareLayer>());
-                }
-                if (newCam.GetComponent<GUILayer>())
-                {
-                    Destroy(newCam.GetComponent<GUILayer>());
-                }
-                foreach (Transform child in newCam.transform)
-                {
-                    Destroy(child.gameObject);
-                }
 
+                camObject.AddComponent<Camera>(mainCamera.GetComponent<Camera>());
+
+                camObject.AddComponent<UnityEngine.PostProcessing.PostProcessingBehaviour>(mainCamera.GetComponent<UnityEngine.PostProcessing.PostProcessingBehaviour>());
+      
+
+                Camera newCam = camObject.GetComponent<Camera>();
+				//newCam.RemoveAllCommandBuffers();
                 newCam.enabled = false;
+
                 return newCam;
             } else
             {
@@ -183,15 +172,13 @@ namespace Vonderportal
             SetSurfaceCamCullingMask();
 
             surfaceCam.Render();
+            
         }
 
 
         //*************************************************************************************************************************//
         // STATIC FUNCTIONS                                                                                                        //
         //*************************************************************************************************************************//
-        // Given position/normal of the plane, calculates plane in camera space.
-
-
         public static void CalculateObliqueMatrix(ref Matrix4x4 projection, Vector4 clipPlane)
         {
             Vector4 q = projection.inverse * new Vector4(

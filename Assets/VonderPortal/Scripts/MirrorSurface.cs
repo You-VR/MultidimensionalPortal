@@ -19,7 +19,6 @@ namespace Vonderportal
 
         }
 
-
         protected override void SetSurfaceCamPosition(Vector3 eyePosition, Quaternion eyeRotation, Matrix4x4 camProjectionMatrix, Matrix4x4 worldToCameraMatrix) {
             Vector3 pos = transform.position;
             Vector3 normal = -transform.forward;

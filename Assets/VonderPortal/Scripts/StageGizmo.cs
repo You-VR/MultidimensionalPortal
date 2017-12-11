@@ -35,7 +35,11 @@ public class StageGizmo : MonoBehaviour
     void OnDrawGizmos()
     {
 
+<<<<<<< HEAD
         if (stageModel == null || mat == null)
+=======
+        if (stageModel == null || mat == null || meshes == null)
+>>>>>>> be7b4c109c2a8baa030cb61df9c5aa1868abcaab
         {
             stageModel = Resources.Load("VR_Stage2") as GameObject;
             mat = Resources.Load("StageGizmoMat") as Material;

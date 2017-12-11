@@ -14,6 +14,7 @@ class StageGizmoLauncher : Editor
 
     static void makeStageGizmo()
     {
+<<<<<<< HEAD
         if (    StageGizmo.stageGizmo == null && 
                 stageGizmo == null && 
                 EditorApplication.isPlaying == false && 
@@ -24,3 +25,16 @@ class StageGizmoLauncher : Editor
         }        
     }
 }
+=======
+        if (StageGizmo.stageGizmo == null &&
+                stageGizmo == null &&
+                EditorApplication.isPlaying == false &&
+                FindObjectsOfType(typeof(StageGizmo)).Length == 0)
+        {
+
+            stageGizmo = (GameObject)PrefabUtility.InstantiatePrefab(Resources.Load("[StageGizmo]"));
+            //stageGizmo.hideFlags = HideFlags.HideInInspector;
+        }
+    }
+}
+>>>>>>> be7b4c109c2a8baa030cb61df9c5aa1868abcaab

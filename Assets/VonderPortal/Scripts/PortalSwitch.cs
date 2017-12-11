@@ -12,6 +12,10 @@ namespace Vonderportal
         public bool automatic = true;
 
         private DimensionManager dimensionManager { get { return DimensionManager.dimensionManagerInstance; } }
+
+        private bool withinBounds = false;
+        private float lastConvertedPoint;
+
         private Camera mainCamera
         {
             get
@@ -49,6 +53,11 @@ namespace Vonderportal
             StartCoroutine(switchTimeOutCoroutine());
         }
 
+        private void OnDrawGizmos()
+        {
+
+        }
+
         IEnumerator switchTimeOutCoroutine()
         {
             yield return new WaitForSeconds(3.0f);
@@ -64,19 +73,20 @@ namespace Vonderportal
 
         void Update()
         {
-            Vector3 convertedPoint = portalSurface.transform.InverseTransformPoint(mainCamera.transform.position);
+            float convertedPoint = portalSurface.transform.InverseTransformPoint(mainCamera.transform.position).z;
+  
+            bool sideSwitch = Mathf.Sign(convertedPoint) != Mathf.Sign(lastConvertedPoint);
+            
 
-            bool inFrontOfPlane       = (convertedPoint.z > 0) != portalSurface.triggerZDirection;
-            bool withinSwitchDistance = Mathf.Abs(convertedPoint.z) > portalSurface.clipPlaneOffset;
-            bool withinBounds         = triggerCollider.bounds.Contains(mainCamera.transform.position);
-
-            if (withinSwitchDistance && inFrontOfPlane && withinBounds)
+            if (sideSwitch  && withinBounds)
             {
                 if (allowSwitch && dimensionManager != null && portalSurface.active)
                 {
                     dimensionManager.ChangeDimension(toDimension);                
                 }
             }
+            lastConvertedPoint = convertedPoint;
+            withinBounds = triggerCollider.bounds.Contains(mainCamera.transform.position);
         }
     }
 

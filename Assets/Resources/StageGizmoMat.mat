@@ -137,7 +137,11 @@ Material:
     - g_flCornerAdjust: 0.5
     - g_flOutlineWidth: 0.005
     m_Colors:
+<<<<<<< HEAD:Assets/Resources/StageGizmoMat.mat
     - _Color: {r: 0.6764706, g: 0.33753058, b: 0.33753058, a: 0.5}
+=======
+    - _Color: {r: 0.6764706, g: 0.3136038, b: 0.3136038, a: 0.5}
+>>>>>>> be7b4c109c2a8baa030cb61df9c5aa1868abcaab:Assets/Resources/StageGizmoMat.mat
     - _EmisColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}

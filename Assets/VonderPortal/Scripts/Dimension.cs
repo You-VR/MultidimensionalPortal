@@ -109,10 +109,24 @@ namespace Vonderportal
                                         {
                                             
 
+<<<<<<< HEAD
                                             Instantiate(    newTrackedObjectChild.gameObject, 
                                                             newTrackedObjectChild.localPosition, 
                                                             newTrackedObjectChild.localRotation, 
                                                             oldTrackedObject.transform);
+=======
+                                            GameObject newObject = Instantiate( newTrackedObjectChild.gameObject,
+                                                                                oldTrackedObject.transform,
+																				false);
+
+											Transform[] newObjectChild =newObject.GetComponentsInChildren<Transform>();
+											foreach (Transform t in newObjectChild)
+											{
+												t.gameObject.layer = layer;
+											}
+
+
+>>>>>>> be7b4c109c2a8baa030cb61df9c5aa1868abcaab
                                         }
                                     }
                                 }
@@ -143,7 +157,15 @@ namespace Vonderportal
                             foreach (Transform t in childrenTransforms)
                             {
                                 t.gameObject.layer = layer;
-                            }                                
+                            }
+
+                            //Mute audiosources
+                            Light[] lightSources = rootObject.GetComponentsInChildren<Light>();
+                            foreach (Light light in lightSources)
+                            {
+                                light.cullingMask = 0;
+                                light.cullingMask |= ( 1 << layer);
+                            }
                         }
 
                         //Mute audiosources
